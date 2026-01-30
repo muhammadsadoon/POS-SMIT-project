@@ -12,7 +12,7 @@ import {
   Group,
   Text,
 } from '@mantine/core';
-import { DashboardLayout } from '@/components/ui/dashboard-layout';
+import DashboardLayout from '@/components/ui/dashboard-layout';
 import { useCreateProjectMutation } from '@/services/projectService';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';

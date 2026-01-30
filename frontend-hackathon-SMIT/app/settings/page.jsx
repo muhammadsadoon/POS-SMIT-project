@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Card, Stack, Title, Text, Tabs, Switch, Group, Button } from '@mantine/core';
-import { DashboardLayout } from '@/components/ui/dashboard-layout';
+import DashboardLayout from '@/components/ui/dashboard-layout';
 import { IconLock, IconBell, IconPalette } from '@tabler/icons-react';
 
 export default function SettingsPage() {

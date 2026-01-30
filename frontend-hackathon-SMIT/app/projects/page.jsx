@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Card,
   Text,
@@ -16,18 +16,23 @@ import {
   Menu,
 } from '@mantine/core';
 import { IconEdit, IconTrash, IconDots, IconPlus } from '@tabler/icons-react';
-import { DashboardLayout } from '@/components/ui/dashboard-layout';
+import DashboardLayout from '@/components/ui/dashboard-layout';
 import {
   useGetProjectsQuery,
   useDeleteProjectMutation,
+  useGetProjectMembersQuery,
 } from '@/services/projectService';
+import { useAuth } from '@/hooks/useAuth';
 import Link from 'next/link';
 import { notifications } from '@mantine/notifications';
 import dayjs from 'dayjs';
 
 export default function ProjectsPage() {
+  const { user } = useAuth();
   const { data: projects = [], isLoading } = useGetProjectsQuery();
   const [deleteProject] = useDeleteProjectMutation();
+
+  const filteredProjects = projects?.data || [];
 
   const handleDelete = async (id) => {
     try {
@@ -68,7 +73,7 @@ export default function ProjectsPage() {
           </Button>
         </Group>
 
-        {projects && projects.length > 0 ? (
+        {projects && projects?.data?.data?.length > 0 ? (
           <Grid>
             {projects.map((project) => (
               <Grid.Col key={project.id} span={{ base: 12, sm: 6, md: 4 }}>

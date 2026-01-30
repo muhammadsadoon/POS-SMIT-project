@@ -17,7 +17,7 @@ import {
   Text,
 } from '@mantine/core';
 import { IconPlus, IconTrash, IconDots } from '@tabler/icons-react';
-import { DashboardLayout } from '@/components/ui/dashboard-layout';
+import DashboardLayout from '@/components/ui/dashboard-layout';
 import {
   useGetProjectMembersQuery,
   useAddProjectMemberMutation,
@@ -82,7 +82,7 @@ export default function ProjectMembersPage() {
           </Button>
         </Group>
 
-        {members && members.length > 0 ? (
+        {members?.data?.data?.length > 0 ? (
           <Card withBorder overflow="hidden">
             <Table striped highlightOnHover>
               <Table.Thead>
@@ -95,7 +95,7 @@ export default function ProjectMembersPage() {
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>
-                {members.map((member) => (
+                {members?.data?.data?.map((member) => (
                   <Table.Tr key={member.id}>
                     <Table.Td>{member.user?.name || 'N/A'}</Table.Td>
                     <Table.Td>{member.user?.email}</Table.Td>

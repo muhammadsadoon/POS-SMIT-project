@@ -25,7 +25,7 @@ import {
   IconDots,
   IconBarcode,
 } from '@tabler/icons-react';
-import { DashboardLayout } from '@/components/ui/dashboard-layout';
+import DashboardLayout from '@/components/ui/dashboard-layout';
 import {
   useGetProductsQuery,
   useCreateProductMutation,
@@ -116,7 +116,7 @@ export default function ProductsPage() {
           </Button>
         </Group>
 
-        {products && products.length > 0 ? (
+        {products && products?.data?.data?.length > 0 ? (
           <Card withBorder overflow="hidden">
             <Table striped highlightOnHover>
               <Table.Thead>

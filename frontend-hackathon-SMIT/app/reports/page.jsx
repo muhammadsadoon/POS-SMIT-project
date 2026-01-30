@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Card, Stack, Title, Text, SimpleGrid, LineChart } from '@mantine/core';
-import { DashboardLayout } from '@/components/ui/dashboard-layout';
+import DashboardLayout from '@/components/ui/dashboard-layout';
 
 export default function ReportsPage() {
   return (

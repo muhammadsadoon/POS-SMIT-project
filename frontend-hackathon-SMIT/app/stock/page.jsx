@@ -24,7 +24,7 @@ import {
   IconAdjustments,
   IconDots,
 } from '@tabler/icons-react';
-import { DashboardLayout } from '@/components/ui/dashboard-layout';
+import DashboardLayout from '@/components/ui/dashboard-layout';
 import {
   useGetStocksQuery,
   useAddStockMutation,

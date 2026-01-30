@@ -23,32 +23,36 @@ import {
   IconCash,
   IconTrendingUp,
 } from '@tabler/icons-react';
-import { DashboardLayout } from '@/components/ui/dashboard-layout';
+import DashboardLayout from '@/components/ui/dashboard-layout';
 import { useGetProductsQuery } from '@/services/productService';
 import { useGetStocksQuery } from '@/services/stockService';
-import { useGetProjectsQuery } from '@/services/projectService';
+import { useGetProjectsQuery, useGetProjectMembersQuery } from '@/services/projectService';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function DashboardPage() {
+  const { user } = useAuth();
   const { data: products = [] } = useGetProductsQuery();
   const { data: stocks = [] } = useGetStocksQuery();
   const { data: projects = [] } = useGetProjectsQuery();
 
+  const filteredProjects = projects?.data?.data || [];
+
   const stats = [
     {
       title: 'Total Products',
-      stats: products?.length || 0,
+      stats: products?.data?.length || 0,
       icon: IconBox,
       color: 'blue',
     },
     {
       title: 'Projects',
-      stats: projects?.length || 0,
+      stats: filteredProjects?.length || 0,
       icon: IconShoppingCart,
       color: 'teal',
     },
     {
       title: 'Total Stock',
-      stats: stocks?.reduce((sum, s) => sum + (s.quantity || 0), 0) || 0,
+      stats: stocks?.data?.reduce((sum, s) => sum + (s.quantity || 0), 0) || 0,
       icon: IconCash,
       color: 'cyan',
     },
@@ -83,7 +87,7 @@ export default function DashboardPage() {
       </Text>
     </Card>
   ));
-
+  console.log(products);
   return (
     <DashboardLayout
       title="Dashboard"
@@ -101,7 +105,7 @@ export default function DashboardPage() {
               View all
             </Text>
           </Group>
-          {products && products.length > 0 ? (
+          {(products && products?.data?.length > 0) ? (
             <Table striped>
               <Table.Thead>
                 <Table.Tr>
@@ -112,11 +116,11 @@ export default function DashboardPage() {
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>
-                {products.slice(0, 5).map((product) => (
-                  <Table.Tr key={product.id}>
-                    <Table.Td>{product.name}</Table.Td>
-                    <Table.Td>${product.price}</Table.Td>
-                    <Table.Td>{product.category}</Table.Td>
+                {products?.data?.map((product, i) => (
+                  <Table.Tr key={i}>
+                    <Table.Td>{product?.name}</Table.Td>
+                    <Table.Td>${product?.price}</Table.Td>
+                    {/* <Table.Td>{product?.category}</Table.Td> */}
                     <Table.Td>
                       <Text size="sm" c="green">
                         Active

@@ -3,7 +3,7 @@ import { MantineThemeOverride } from '@mantine/core';
 export const theme = {
   primaryColor: 'teal',
   primaryShade: 6,
-  colorScheme: 'light',
+  colorScheme: 'dark',
   colors: {
     teal: [
       '#E6FBF5',

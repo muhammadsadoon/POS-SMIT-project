@@ -1,12 +1,37 @@
 import { createSlice } from '@reduxjs/toolkit';
+import Cookies from 'js-cookie';
 
-const initialState = {
-  user: null,
-  token: null,
-  isLoading: false,
-  error: null,
-  isAuthenticated: false,
+const getInitialState = () => {
+  if (typeof window !== 'undefined') {
+    try {
+      const token = Cookies.get('token');
+      const userCookie = Cookies.get('user');
+      if (token && userCookie && userCookie !== 'undefined') {
+        const user = JSON.parse(userCookie);
+        return {
+          user: user,
+          token: token,
+          isLoading: false,
+          error: null,
+          isAuthenticated: true,
+        };
+      }
+    } catch (error) {
+      console.error('Error restoring auth state:', error);
+      Cookies.remove('token');
+      Cookies.remove('user');
+    }
+  }
+  return {
+    user: null,
+    token: null,
+    isLoading: false,
+    error: null,
+    isAuthenticated: false,
+  };
 };
+
+const initialState = getInitialState();
 
 const authSlice = createSlice({
   name: 'auth',
@@ -16,15 +41,19 @@ const authSlice = createSlice({
       state.user = action.payload.user;
       state.token = action.payload.token;
       state.isAuthenticated = true;
-      localStorage.setItem('token', action.payload.token);
-      localStorage.setItem('user', JSON.stringify(action.payload.user));
+      console.log(action);
+      // Set cookies for 32 hours (32/24 days)
+      const expires = 32 / 24;
+      Cookies.set('token', action.payload.token, { expires });
+      Cookies.set('user', JSON.stringify(action.payload.user), { expires });
+      return state;
     },
     logout: (state) => {
       state.user = null;
       state.token = null;
       state.isAuthenticated = false;
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      Cookies.remove('token');
+      Cookies.remove('user');
     },
     setLoading: (state, action) => {
       state.isLoading = action.payload;
@@ -34,11 +63,11 @@ const authSlice = createSlice({
     },
     hydrate: (state) => {
       if (typeof window !== 'undefined') {
-        const token = localStorage.getItem('token');
-        const user = localStorage.getItem('user');
-        if (token && user) {
+        const token = Cookies.get('token');
+        const userCookie = Cookies.get('user');
+        if (token && userCookie && userCookie !== 'undefined') {
           state.token = token;
-          state.user = JSON.parse(user);
+          state.user = JSON.parse(userCookie);
           state.isAuthenticated = true;
         }
       }

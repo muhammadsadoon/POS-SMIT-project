@@ -10,6 +10,8 @@ export const useAuth = () => {
 
 export const useProtectedRoute = () => {
   const { isAuthenticated } = useAuth();
+  console.log('isAuthenticated: ', isAuthenticated);
+
   const router = useRouter();
 
   useEffect(() => {
