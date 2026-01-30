@@ -73,10 +73,10 @@ export default function ProjectsPage() {
           </Button>
         </Group>
 
-        {projects && projects?.data?.data?.length > 0 ? (
+        {filteredProjects.length > 0 ? (
           <Grid>
-            {projects.map((project) => (
-              <Grid.Col key={project.id} span={{ base: 12, sm: 6, md: 4 }}>
+            {filteredProjects.map((project) => (
+              <Grid.Col key={project._id} span={{ base: 12, sm: 6, md: 4 }}>
                 <Card withBorder radius="md" p="md">
                   <Group justify="space-between" mb="md">
                     <Title order={4}>{project.name}</Title>
@@ -89,13 +89,13 @@ export default function ProjectsPage() {
                       <Menu.Dropdown>
                         <Menu.Item
                           component={Link}
-                          href={`/projects/${project.id}/members`}
+                          href={`/projects/${project._id}/members`}
                         >
                           Members
                         </Menu.Item>
                         <Menu.Item
                           component={Link}
-                          href={`/projects/${project.id}/edit`}
+                          href={`/projects/${project._id}/edit`}
                           leftSection={<IconEdit size={14} />}
                         >
                           Edit

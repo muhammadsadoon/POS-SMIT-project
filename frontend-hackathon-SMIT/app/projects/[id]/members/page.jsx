@@ -36,16 +36,20 @@ export default function ProjectMembersPage() {
   const { data: members = [] } = useGetProjectMembersQuery(projectId);
   const [addMember, { isLoading }] = useAddProjectMemberMutation();
 
-  const { register, handleSubmit, formState: { errors }, reset } = useForm({
+  const { register, handleSubmit, formState: { errors }, reset, setValue, watch } = useForm({
     defaultValues: {
       email: '',
-      role: 'staff',
+      role: 'STAFF',
     },
   });
 
+  const selectedRole = watch('role');
+
   const onSubmit = async (data) => {
+    console.log(data);
     try {
-      await addMember({ projectId, ...data }).unwrap();
+      const submitData = { ...data, role: data.role.toLowerCase() };
+      await addMember({ projectId, ...submitData }).unwrap();
       notifications.show({
         title: 'Success',
         message: 'Member added successfully',
@@ -82,7 +86,7 @@ export default function ProjectMembersPage() {
           </Button>
         </Group>
 
-        {members?.data?.data?.length > 0 ? (
+        {members?.data?.length > 0 ? (
           <Card withBorder overflow="hidden">
             <Table striped highlightOnHover>
               <Table.Thead>
@@ -155,12 +159,13 @@ export default function ProjectMembersPage() {
             />
 
             <Select
-              label="Role"
+              label="role"
               placeholder="Select role"
               data={[
-                { value: 'admin', label: 'Administrator' },
-                { value: 'manager', label: 'Manager' },
-                { value: 'staff', label: 'Staff' },
+                { value: 'ADMIN', label: 'Administrator' },
+                { value: 'MANAGER', label: 'Manager' },
+                { value: 'CASHIER', label: 'Casher' },
+                { value: 'STAFF', label: 'Staff' },
               ]}
               {...register('role')}
               error={errors.role?.message}

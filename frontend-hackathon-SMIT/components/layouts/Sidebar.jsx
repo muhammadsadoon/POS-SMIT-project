@@ -18,6 +18,7 @@ import {
   IconFolders,
   IconBox,
   IconArchive,
+  IconReceipt,
   IconChartBar,
   IconSettings,
   IconLogout,
@@ -34,6 +35,7 @@ const navItems = [
   { label: 'Projects', icon: IconFolders, href: '/projects' },
   { label: 'Products', icon: IconBox, href: '/products' },
   { label: 'Stock', icon: IconArchive, href: '/stock' },
+  { label: 'Sales', icon: IconReceipt, href: '/sales' },
   { label: 'Reports', icon: IconChartBar, href: '/reports' },
   { label: 'Settings', icon: IconSettings, href: '/settings' },
 ];

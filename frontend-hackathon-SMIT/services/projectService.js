@@ -4,7 +4,7 @@ import { authenticatedBaseQuery } from './authService';
 export const projectApi = createApi({
   reducerPath: 'projectApi',
   baseQuery: authenticatedBaseQuery,
-  tagTypes: ['Projects'],
+  tagTypes: ['Projects', 'Members'],
   endpoints: (builder) => ({
     getProjects: builder.query({
       query: () => '/projects',
@@ -43,11 +43,11 @@ export const projectApi = createApi({
         method: 'POST',
         body: data,
       }),
-      invalidatesTags: (result, error, { projectId }) => [{ type: 'Projects', id: projectId }],
+      invalidatesTags: (result, error, { projectId }) => [{ type: 'Projects', id: projectId }, 'Members'],
     }),
     getProjectMembers: builder.query({
       query: (projectId) => `/projects/${projectId}/members`,
-      providesTags: (result, error, projectId) => [{ type: 'Projects', id: projectId }],
+      providesTags: (result, error, projectId) => [{ type: 'Projects', id: projectId }, 'Members'],
     }),
   }),
 });

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Card,
   Button,
@@ -41,6 +42,8 @@ export default function ProductsPage() {
   const { data: products = [] } = useGetProductsQuery();
   const [createProduct, { isLoading: isCreating }] = useCreateProductMutation();
   const [deleteProduct] = useDeleteProductMutation();
+  const user = useSelector((state) => state.auth.user);
+  const isAdminOrManager = user?.role === 'Admin' || user?.role === 'Manager';
 
   const { register, handleSubmit, formState: { errors }, reset, watch } = useForm({
     defaultValues: {
@@ -108,12 +111,14 @@ export default function ProductsPage() {
       <Stack gap="lg">
         <Group justify="space-between">
           <Title order={3}>Product Inventory</Title>
-          <Button
-            leftSection={<IconPlus size={14} />}
-            onClick={() => setOpened(true)}
-          >
-            Add Product
-          </Button>
+          {isAdminOrManager && (
+            <Button
+              leftSection={<IconPlus size={14} />}
+              onClick={() => setOpened(true)}
+            >
+              Add Product
+            </Button>
+          )}
         </Group>
 
         {products && products?.data?.data?.length > 0 ? (
@@ -146,33 +151,39 @@ export default function ProductsPage() {
                     </Table.Td>
                     <Table.Td>{product.sku}</Table.Td>
                     <Table.Td>
-                      <Menu position="bottom-end">
-                        <Menu.Target>
-                          <ActionIcon variant="subtle">
-                            <IconDots size={14} />
-                          </ActionIcon>
-                        </Menu.Target>
-                        <Menu.Dropdown>
-                          <Menu.Item
-                            leftSection={<IconEdit size={14} />}
-                          >
-                            Edit
-                          </Menu.Item>
-                          <Menu.Item
-                            leftSection={<IconBarcode size={14} />}
-                          >
-                            View Barcode
-                          </Menu.Item>
-                          <Menu.Divider />
-                          <Menu.Item
-                            color="red"
-                            leftSection={<IconTrash size={14} />}
-                            onClick={() => handleDelete(product.id)}
-                          >
-                            Delete
-                          </Menu.Item>
-                        </Menu.Dropdown>
-                      </Menu>
+                      {isAdminOrManager ? (
+                        <Menu position="bottom-end">
+                          <Menu.Target>
+                            <ActionIcon variant="subtle">
+                              <IconDots size={14} />
+                            </ActionIcon>
+                          </Menu.Target>
+                          <Menu.Dropdown>
+                            <Menu.Item
+                              leftSection={<IconEdit size={14} />}
+                            >
+                              Edit
+                            </Menu.Item>
+                            <Menu.Item
+                              leftSection={<IconBarcode size={14} />}
+                            >
+                              View Barcode
+                            </Menu.Item>
+                            <Menu.Divider />
+                            <Menu.Item
+                              color="red"
+                              leftSection={<IconTrash size={14} />}
+                              onClick={() => handleDelete(product.id)}
+                            >
+                              Delete
+                            </Menu.Item>
+                          </Menu.Dropdown>
+                        </Menu>
+                      ) : (
+                        <ActionIcon variant="subtle" disabled>
+                          <IconDots size={14} />
+                        </ActionIcon>
+                      )}
                     </Table.Td>
                   </Table.Tr>
                 ))}

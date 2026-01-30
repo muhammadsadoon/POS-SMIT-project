@@ -44,7 +44,7 @@ export default function NewProjectPage() {
         color: 'green',
       });
       // Redirect to add members
-      router.push(`/projects/${result.id}/members`);
+      router.push(`/projects/${result.data._id}/members`);
     } catch (err) {
       notifications.show({
         title: 'Error',
