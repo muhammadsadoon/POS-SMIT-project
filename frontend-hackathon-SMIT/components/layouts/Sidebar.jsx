@@ -25,6 +25,7 @@ import {
   IconChevronDown,
 } from '@tabler/icons-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '@/store/slices/authSlice';
@@ -65,9 +66,12 @@ export function Sidebar({ active, onNavClick }) {
       <Box style={{ flex: 1, overflowY: 'auto' }}>
         <div className={classes.header}>
           <Group justify="space-between" mb="xs">
-            <Text fw={700} size="lg">
-              POS System
-            </Text>
+            <Group gap="sm">
+              <Image src="/logo.png" alt="Logo" width={40} height={40} />
+              <Text fw={700} size="lg">
+                Dukanhub
+              </Text>
+            </Group>
             <Badge>v1.0</Badge>
           </Group>
         </div>

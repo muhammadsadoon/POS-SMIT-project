@@ -13,6 +13,8 @@ import {
   TextInput,
   Alert,
   Box,
+  MantineProvider,
+  Center,
 } from '@mantine/core';
 import { IconMail, IconLock, IconAlertCircle } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
