@@ -1,5 +1,6 @@
-import ThemeProvider from "@/components/theme-provider";
+import Providers from "@/components/providers";
 import "./globals.css";
+import '@mantine/core/styles.css';
 
 export default function RootLayout({
   children,
@@ -11,9 +12,9 @@ export default function RootLayout({
       <body
         cz-shortcut-listen="true"
       >
-        <ThemeProvider>
+        <Providers>
           {children}
-        </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );

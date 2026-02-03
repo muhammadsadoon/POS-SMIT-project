@@ -12,9 +12,14 @@ const initialState: InitailStateType = {
 
 const authSlice = createSlice({
     name: "auth",
-    reducers: {},
+    reducers: {
+        SET_AUTH: (state,action) => {
+            state.auth = action.payload;
+            state.isAuthentication = true;
+        }
+    },
     initialState
 })
 
 export default authSlice
-export const { } = authSlice
+export const { SET_AUTH } = authSlice.actions
