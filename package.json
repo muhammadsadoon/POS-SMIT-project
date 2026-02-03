@@ -1,0 +1,45 @@
+{
+  "name": "Saylani Project",
+  "version": "0.1.0",
+  "private": true,
+  "author": "muhammad sadoon",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@mantine/carousel": "^8.3.14",
+    "@mantine/charts": "^8.3.14",
+    "@mantine/code-highlight": "^8.3.14",
+    "@mantine/core": "^8.3.14",
+    "@mantine/dates": "^8.3.14",
+    "@mantine/dropzone": "^8.3.14",
+    "@mantine/form": "^8.3.14",
+    "@mantine/hooks": "^8.3.14",
+    "@mantine/notifications": "^8.3.14",
+    "@mantine/nprogress": "^8.3.14",
+    "@reduxjs/toolkit": "^2.11.2",
+    "dayjs": "^1.11.19",
+    "dotenv": "^17.2.3",
+    "embla-carousel": "^8.6.0",
+    "embla-carousel-react": "^8.6.0",
+    "next": "16.1.6",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-redux": "^9.2.0",
+    "recharts": "^3.7.0",
+    "redux": "^5.0.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.6",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
