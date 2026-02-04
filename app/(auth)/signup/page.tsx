@@ -23,7 +23,7 @@ export default function SignUpScreen() {
       <Grid h="100%" w="100%" m={0} gutter={0}>
 
         {/* Left */}
-        <Grid.Col bg={"white"} span={isMobile ? 12 : 6} h="100%">
+        <Grid.Col span={isMobile ? 12 : 6} h={"100%"}>
           <Stack h="100%" justify="center" align="center">
             <Text size="xl" fw={600}>Create your own page</Text>
           </Stack>

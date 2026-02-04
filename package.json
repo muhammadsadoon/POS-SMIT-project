@@ -25,6 +25,7 @@
     "dotenv": "^17.2.3",
     "embla-carousel": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
+    "firebase": "^12.8.0",
     "framer-motion": "^12.31.0",
     "next": "16.1.6",
     "react": "19.2.3",
