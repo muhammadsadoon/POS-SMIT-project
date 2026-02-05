@@ -1,13 +1,13 @@
 "use client";
-import useAuth from '@/utils/auth';
 import { DashboardPropType } from '@/utils/types';
 import React, { ReactNode } from 'react'
 import { useRouter } from 'next/navigation';
 import { AppShell } from '@mantine/core';
+import useAuthRedux from '@/utils/auth';
 
 
 const DashboardProvider = ({ children }: DashboardPropType) => {
-    const auth = useAuth();
+    const auth = useAuthRedux();
     const navigate = useRouter();
     if(!auth.isAuthenticaion){
         return (
@@ -16,6 +16,7 @@ const DashboardProvider = ({ children }: DashboardPropType) => {
             </>
         )
     }
+
     return (
         <React.Fragment>
             <AppShell>

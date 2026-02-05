@@ -2,7 +2,7 @@
 
 import { RootState } from "@/store/store"
 import { useSelector } from "react-redux"
-const useAuth = () => {
+const useAuthRedux = () => {
     const state = useSelector((state: RootState) => state.authState)
 
     if(!state.isAuthentication) return {
@@ -15,4 +15,4 @@ const useAuth = () => {
     }
 }
 
-export default useAuth;
+export default useAuthRedux;

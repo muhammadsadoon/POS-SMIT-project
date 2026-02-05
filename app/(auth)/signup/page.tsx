@@ -1,61 +1,109 @@
-"use client"
+"use client";
+import { SignUpFromType } from "@/utils/types";
+import { Button, Grid, Image, NumberInput, Paper, PasswordInput, Stack, Text, TextInput, useMantineTheme } from "@mantine/core";
+import { useForm } from "@mantine/form";
+import { useMediaQuery } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
+import Link from "next/link";
+import 'react-phone-number-input/style.css';
 
-import { Box, Button, Checkbox, Grid, Group, Stack, Text, TextInput } from "@mantine/core"
-import { useMediaQuery } from "@mantine/hooks"
-import { useForm } from '@mantine/form';
+const SignUpPage = () => {
+    const form = useForm({
+        mode: 'uncontrolled',
+        initialValues: {
+            name: '',
+            email: '',
+            password: '',
+            phone: '',
+            confirmPassword: "",
+        },
 
-export default function SignUpScreen() {
-  const isMobile = useMediaQuery("(max-width:780px)");
+        validate: {
+            name: (value) => (value.length > 5 ? null : 'At les enter the 4 character your name'),
+            email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
+            phone: (value) => (value.length == 11 ? null : 'At les enter the 11 numbers'),
+            password: (value) => {
+                if (value.length < 8) return "Password must be at least 8 characters";
+                if (!/[A-Z]/.test(value)) return "Must contain one uppercase letter";
+                if (!/[0-9]/.test(value)) return "Must contain one number";
+                if (!/[!@#$%^&*]/.test(value))
+                    return "Must contain one special character";
+                return null;
+            },
+            confirmPassword: (v, values) => v !== values.password ? "Passwords do not match" : null,
+        },
+    });
+    const isMobile = useMediaQuery("(max-width: 780px)");
+    const tp = useMantineTheme();
 
-  const form = useForm({
-    mode: 'uncontrolled',
-    initialValues: {
-      email: '',
-      termsOfService: false,
-    },
-    validate: {
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-    },
-  });
+    const handleError = () => {
+        notifications.show({
+            title: "Form Error",
+            message: "Please fix all errors before submitting ❌",
+            color: "red",
+        });
+    };
+    const handleSignInForm = (value: typeof form.values) => {
+        notifications.show({
+            title: "Success",
+            message: "Form submitted successfully 🎉",
+            color: "green",
+        });
+        console.log(value);
+    }
+    return (
+        <Grid m={0} p={0} mih="100vh" gutter={0} style={{ overflow: "hidden" }} >
+            {!isMobile && <Grid.Col span={isMobile ? 12 : 6} p={0} m={0} mih={"100vh"} bg="white" >
+                <Stack gap={10} justify="center">
+                    <div style={{ padding: "30px" }}>
+                        <Text c={tp.colors.dark[6]} m={0} p={0} fz={30} fw={700}>Create your Starter</Text>
+                        <Text c={tp.colors.dark[3]} m={0} p={0} fz={20}>See and make more Startup</Text>
+                        <Text c={tp.colors.dark[3]} m={0} p={0} fz={13}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique, ex quibusdam ipsam necessitatibus eveniet pariatur quia quod voluptas dolores, dolor dolore saepe perspiciatis facilis incidunt totam animi molestias harum error!</Text>
+                    </div>
+                    <Paper p={"5px 5px 5px 0px"} bg={"transparent"} bd={"2px solid black"} bdrs={"0% 3% 3% 0%"} w={"90%"}>
+                        <Image src={"/dashboard.png"} alt="Test image" bdrs={"0% 3% 3% 0%"} h={400} w={"100%"} />
+                    </Paper>
+                </Stack>
+            </Grid.Col>}
 
-  return (
-    <Box h="100vh" w="100vw" m={0} p={0} style={{ overflow: "hidden" }}>
-      <Grid h="100%" w="100%" m={0} gutter={0}>
+            <Grid.Col span={isMobile ? 12 : 6} mih={"100vh"} p="xl" m={0} bg="dark">
+                <Stack gap={0} h={"100%"}>
+                    <Paper bg={"transparent"} my={20}>
+                        <Text fw={600} fz={25}>Sign Up</Text>
+                        <Text fz={14}>Let's connect with us!</Text>
+                    </Paper>
+                    <form onSubmit={form.onSubmit((values) => handleSignInForm(values), handleError)}>
+                        <Stack>
+                            <TextInput label="Name" type="text" name="name" placeholder="e.o John Doe" {...form.getInputProps("name")} />
+                            <TextInput label="Email" type="email" name="email" placeholder="john@example.com" {...form.getInputProps("email")} />
+                            <NumberInput
+                                label="Phone Number"
+                                placeholder="345 0012345"
+                                {...form.getInputProps("phone")}
+                            />
+                            <PasswordInput
+                                label="Password"
+                                name="password"
+                                placeholder="Input placeholder"
+                                {...form.getInputProps("password")}
+                                max={11}
+                                />
 
-        {/* Left */}
-        <Grid.Col span={isMobile ? 12 : 6} h={"100%"}>
-          <Stack h="100%" justify="center" align="center">
-            <Text size="xl" fw={600}>Create your own page</Text>
-          </Stack>
-        </Grid.Col>
+                            <PasswordInput
+                                label="Confirm Password"
+                                placeholder="confirm password"
+                                {...form.getInputProps("confirmPassword")}
+                            />
+                            <Button type="submit">
+                                Sign In
+                            </Button>
+                            <Text>If you have already account <Link style={{color:"skyblue"}} href={"/login"}>login now</Link></Text>
+                        </Stack>
+                    </form>
+                </Stack>
+            </Grid.Col>
+        </Grid>
+    );
+};
 
-        {/* Right */}
-        <Grid.Col span={isMobile ? 12 : 6} h="100%">
-          <Stack h="100%" justify="center" px="lg">
-            <form onSubmit={form.onSubmit((values) => console.log(values))}>
-              <TextInput
-                withAsterisk
-                label="Email"
-                placeholder="your@email.com"
-                key={form.key('email')}
-                {...form.getInputProps('email')}
-              />
-
-              <Checkbox
-                mt="md"
-                label="I agree to sell my privacy"
-                key={form.key('termsOfService')}
-                {...form.getInputProps('termsOfService', { type: 'checkbox' })}
-              />
-
-              <Group justify="flex-end" mt="md">
-                <Button type="submit">Submit</Button>
-              </Group>
-            </form>
-          </Stack>
-        </Grid.Col>
-
-      </Grid>
-    </Box>
-  );
-}
+export default SignUpPage;

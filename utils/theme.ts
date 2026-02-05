@@ -2,7 +2,7 @@
 export const theme = {
   primaryColor: 'blue',
   primaryShade: 6,
-  colorScheme: 'dark',
+  colorScheme: 'auto',
   colors: {
     blue: [
       '#ffffff',
