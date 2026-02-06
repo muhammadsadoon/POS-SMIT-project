@@ -1,5 +1,5 @@
 "use client";
-import { useGoogleAuthMutation } from "@/store/actions/auth-action/auth-action";
+import { useGoogleAuthMutation, useLoginUserMutation } from "@/store/actions/auth-action/auth-action";
 import { SignUpFromType } from "@/utils/types";
 import { Button, Divider, Grid, Group, Image, NumberInput, Paper, PasswordInput, Stack, Text, TextInput, useMantineTheme } from "@mantine/core";
 import { useForm } from "@mantine/form";
@@ -38,13 +38,28 @@ const LoginPage = () => {
             color: "red",
         });
     };
-    const handleSignInForm = (value: typeof form.values) => {
-        notifications.show({
-            title: "Success",
-            message: "Form submitted successfully 🎉",
-            color: "green",
-        });
-        console.log(value);
+    // handle signIn auth
+    const [handleUserSginInWithEmailAndPassword, { isLoading, error }] = useLoginUserMutation();
+    const handleSignInForm = async (value: typeof form.values) => {
+        try {
+            const res = await handleUserSginInWithEmailAndPassword({
+                email: form.values.email,
+                password: btoa(form.values.password)
+            })
+            console.log(res)
+            if (res?.error) throw res.error?.message;
+            else notifications.show({
+                title: "Success",
+                message: "Form submitted successfully 🎉",
+                color: "green",
+            });
+        } catch (err) {
+            notifications.show({
+                title: "Error",
+                message: `${err}`,
+                color: "red",
+            });
+        }
     }
 
     // handle the google signin instance here...
