@@ -45,18 +45,22 @@ const LoginPage = () => {
                 email: value.email,
                 password: btoa(value.password)
             })
-            if (res?.error) throw res.error?.message;
+            if (res?.error) throw new Error(`${res.error}`);
             else notifications.show({
                 title: "Success",
                 message: "Form submitted successfully 🎉",
                 color: "green",
             });
         } catch (err) {
-            notifications.show({
-                title: "Error",
-                message: `${err}`,
-                color: "red",
-            });
+            if (err instanceof Error) {
+                notifications.show({
+                    title: "Error",
+                    message: `${err.message}`,
+                    color: "red",
+                });
+            }else{
+                console.log("Err: ",err)
+            }
         }
     }
 
