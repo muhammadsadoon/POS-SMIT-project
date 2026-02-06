@@ -9,12 +9,12 @@ import { getDatabase } from "firebase/database";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY,
+  apiKey: "AIzaSyBFU61bxvGXOkuBObySkgDmPOushdL7jUw",
   authDomain: "saylani-fullstack-pos-project.firebaseapp.com",
   projectId: "saylani-fullstack-pos-project",
   storageBucket: "saylani-fullstack-pos-project.firebasestorage.app",
-  messagingSenderId: process.env.FIREBASE_API_MESSAGES_SENDER_ID,
-  appId: process.env.FIREBASE_API_APP_ID,
+  messagingSenderId: "640389103115",
+  appId: "1:640389103115:web:eb4f0a0418db56a585110e",
   measurementId: "G-Y4K92RLKV5"
 };
 

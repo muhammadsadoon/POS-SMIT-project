@@ -1,8 +1,12 @@
-import {configureStore} from "@reduxjs/toolkit"
+import { configureStore } from "@reduxjs/toolkit"
 import combineR from "./reducers/reducers"
+import { authApi } from "./actions/auth-action/auth-action";
+
 
 const store = configureStore({
-    reducer : combineR
+    reducer: combineR,
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(authApi.middleware)
 })
 
 export default store;

@@ -1,25 +1,22 @@
 "use client";
+import { useGoogleAuthMutation } from "@/store/actions/auth-action/auth-action";
 import { SignUpFromType } from "@/utils/types";
-import { Button, Grid, Image, NumberInput, Paper, PasswordInput, Stack, Text, TextInput, useMantineTheme } from "@mantine/core";
+import { Button, Divider, Grid, Group, Image, NumberInput, Paper, PasswordInput, Stack, Text, TextInput, useMantineTheme } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useMediaQuery } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import Link from "next/link";
-import 'react-phone-number-input/style.css';
+import { FaGoogle } from "react-icons/fa6";
 
 const LoginPage = () => {
     const form = useForm({
         mode: 'uncontrolled',
         initialValues: {
-            name: '',
             email: '',
             password: '',
-            phone: '',
-            confirmPassword: "",
         },
 
         validate: {
-            
             email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
             password: (value) => {
                 if (value.length < 8) return "Password must be at least 8 characters";
@@ -49,6 +46,13 @@ const LoginPage = () => {
         });
         console.log(value);
     }
+
+    // handle the google signin instance here...
+    const [userSignInWithGoogle] = useGoogleAuthMutation();
+    const handleSignInWithGoogle = (value: typeof form.values) => {
+        console.log(value)
+        userSignInWithGoogle({})
+    }
     return (
         <Grid m={0} p={0} mih="100vh" gutter={0} style={{ overflow: "hidden" }} >
             {!isMobile && <Grid.Col span={isMobile ? 12 : 6} p={0} m={0} mih={"100vh"} bg="white" >
@@ -72,7 +76,7 @@ const LoginPage = () => {
                     </Paper>
                     <form onSubmit={form.onSubmit((values) => handleSignInForm(values), handleError)}>
                         <Stack>
-                            
+
                             <TextInput label="Email" type="email" name="email" placeholder="john@example.com" {...form.getInputProps("email")} />
                             <PasswordInput
                                 label="Password"
@@ -85,7 +89,13 @@ const LoginPage = () => {
                             <Button type="submit">
                                 Sign In
                             </Button>
-                            <Text>If you have not an account <Link style={{color:"skyblue"}} href={"/signup"}>Register now</Link></Text>
+                            <Text>If you have not an account <Link style={{ color: "skyblue" }} href={"/signup"}>Register now</Link></Text>
+                            <Divider label="or" />
+                            <Button onClick={() => handleSignInWithGoogle(form.values)}>
+                                <Group gap={10} justify="center">
+                                    <FaGoogle /><Text>Continue with google</Text>
+                                </Group>
+                            </Button>
                         </Stack>
                     </form>
                 </Stack>
