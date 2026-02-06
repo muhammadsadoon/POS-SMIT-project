@@ -1,11 +1,10 @@
 "use client";
-import { SignUpFromType } from "@/utils/types";
+import { useSignupUserMutation } from "@/store/actions/auth-action/auth-action";
 import { Button, Grid, Image, NumberInput, Paper, PasswordInput, Stack, Text, TextInput, useMantineTheme } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useMediaQuery } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import Link from "next/link";
-import 'react-phone-number-input/style.css';
 
 const SignUpPage = () => {
     const form = useForm({
@@ -21,7 +20,9 @@ const SignUpPage = () => {
         validate: {
             name: (value) => (value.length > 5 ? null : 'At les enter the 4 character your name'),
             email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-            phone: (value) => (value.length == 11 ? null : 'At les enter the 11 numbers'),
+            phone: (value) => {
+                console.log(String(value).length)
+                return String(value).length === 10 ? null : 'Number must be exactly 11 characters'},
             password: (value) => {
                 if (value.length < 8) return "Password must be at least 8 characters";
                 if (!/[A-Z]/.test(value)) return "Must contain one uppercase letter";
@@ -35,7 +36,7 @@ const SignUpPage = () => {
     });
     const isMobile = useMediaQuery("(max-width: 780px)");
     const tp = useMantineTheme();
-
+    console.log(form.values.phone.length)
     const handleError = () => {
         notifications.show({
             title: "Form Error",
@@ -43,13 +44,32 @@ const SignUpPage = () => {
             color: "red",
         });
     };
-    const handleSignInForm = (value: typeof form.values) => {
-        notifications.show({
-            title: "Success",
-            message: "Form submitted successfully 🎉",
-            color: "green",
-        });
-        console.log(value);
+
+    // handle signUp auth with simple email and password...
+
+    const [handleSignUp] = useSignupUserMutation();
+    const handleSignInForm = async (value: typeof form.values) => {
+        try {
+            const res = await handleSignUp({
+                name: value.name,
+                email: value.email,
+                password: btoa(value.password),
+                phone: value.phone
+            })
+
+            if (res.error) throw res.error?.message;
+            else notifications.show({
+                title: "Success",
+                message: "Form submitted successfully 🎉",
+                color: "green",
+            });
+        } catch (err) {
+            notifications.show({
+                title: "Error!!!",
+                message: `${err}`,
+                color: "red",
+            });
+        }
     }
     return (
         <Grid m={0} p={0} mih="100vh" gutter={0} style={{ overflow: "hidden" }} >
@@ -87,7 +107,7 @@ const SignUpPage = () => {
                                 placeholder="Input placeholder"
                                 {...form.getInputProps("password")}
                                 max={11}
-                                />
+                            />
 
                             <PasswordInput
                                 label="Confirm Password"
@@ -97,7 +117,7 @@ const SignUpPage = () => {
                             <Button type="submit">
                                 Sign In
                             </Button>
-                            <Text>If you have already account <Link style={{color:"skyblue"}} href={"/login"}>login now</Link></Text>
+                            <Text fz={14}>If you have already account <Link style={{ color: "skyblue" }} href={"/login"}>login now</Link></Text>
                         </Stack>
                     </form>
                 </Stack>

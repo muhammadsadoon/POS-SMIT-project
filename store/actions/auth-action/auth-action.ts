@@ -9,6 +9,7 @@ import {
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { LOGOUT_AUTH, SET_AUTH } from "@/store/reducers/auth-reducer/auth-reducer";
+import { deleteCookie, setCookie } from "cookies-next"
 
 export const authApi = createApi({
   reducerPath: "authApi",
@@ -29,7 +30,8 @@ export const authApi = createApi({
             phone: res.user.phoneNumber,
             provider: "email/password",
           };
-
+          const token = await res.user.getIdToken();
+          setCookie("U-t-pos", token)
           dispatch(SET_AUTH(user));
           return { data: user };
         } catch (error: any) {
@@ -55,7 +57,8 @@ export const authApi = createApi({
             phone,
             provider: "email/password",
           };
-
+          const token = await res.user.getIdToken();
+          setCookie("U-t-pos", token)
           dispatch(SET_AUTH(user));
           return { data: user };
         } catch (error: any) {
@@ -66,7 +69,7 @@ export const authApi = createApi({
 
     // 🔹 GOOGLE LOGIN
     googleAuth: builder.mutation({
-      async queryFn({}, { dispatch }) {
+      async queryFn({ }, { dispatch }) {
         try {
           const provider = new GoogleAuthProvider();
           const res = await signInWithPopup(auth, provider);
@@ -80,6 +83,8 @@ export const authApi = createApi({
             provider: "google",
           };
 
+          const token = await res.user.getIdToken();
+          setCookie("U-t-pos", token)
           dispatch(SET_AUTH(user));
           return { data: user };
         } catch (error: any) {
@@ -94,6 +99,7 @@ export const authApi = createApi({
         try {
           await signOut(auth);
           dispatch(LOGOUT_AUTH());
+          deleteCookie("U-t-pos")
           return { data: { message: "user logout successfully" } };
         } catch (error: any) {
           return { error: { message: error.message } };

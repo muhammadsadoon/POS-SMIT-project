@@ -3,7 +3,7 @@ import { protectedRoutes, publicRoutes } from "./utils/routes/routes";
 import { matchRoute } from "./utils/routes/matchRoute";
 
 const middlewareResponse = async (req: NextRequest) => {
-    const token = req.cookies.get("token")?.value;
+    const token = req.cookies.get("U-t-pos")?.value;
     const { pathname } = req.nextUrl;
 
     // check protectedRoute hit? (supports dynamic)

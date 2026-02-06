@@ -21,6 +21,7 @@
     "@mantine/notifications": "^8.3.14",
     "@mantine/nprogress": "^8.3.14",
     "@reduxjs/toolkit": "^2.11.2",
+    "cookies-next": "^6.1.1",
     "dayjs": "^1.11.19",
     "dotenv": "^17.2.3",
     "embla-carousel": "^8.6.0",

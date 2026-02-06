@@ -1,6 +1,5 @@
 "use client";
 import { useGoogleAuthMutation, useLoginUserMutation } from "@/store/actions/auth-action/auth-action";
-import { SignUpFromType } from "@/utils/types";
 import { Button, Divider, Grid, Group, Image, NumberInput, Paper, PasswordInput, Stack, Text, TextInput, useMantineTheme } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useMediaQuery } from "@mantine/hooks";
@@ -43,10 +42,9 @@ const LoginPage = () => {
     const handleSignInForm = async (value: typeof form.values) => {
         try {
             const res = await handleUserSginInWithEmailAndPassword({
-                email: form.values.email,
-                password: btoa(form.values.password)
+                email: value.email,
+                password: btoa(value.password)
             })
-            console.log(res)
             if (res?.error) throw res.error?.message;
             else notifications.show({
                 title: "Success",
@@ -104,7 +102,7 @@ const LoginPage = () => {
                             <Button type="submit">
                                 Sign In
                             </Button>
-                            <Text>If you have not an account <Link style={{ color: "skyblue" }} href={"/signup"}>Register now</Link></Text>
+                            <Text fz={14}>If you have not an account <Link style={{ color: "skyblue" }} href={"/signup"}>Register now</Link></Text>
                             <Divider label="or" />
                             <Button onClick={() => handleSignInWithGoogle(form.values)}>
                                 <Group gap={10} justify="center">

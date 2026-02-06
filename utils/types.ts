@@ -12,3 +12,7 @@ export interface SignInFromType {
     email: String,
     password: String,
 }
+
+export interface ShowErrorType {
+    message?: String 
+}
