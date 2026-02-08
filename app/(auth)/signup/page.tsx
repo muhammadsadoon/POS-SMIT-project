@@ -90,7 +90,7 @@ const SignUpPage = () => {
                 </Stack>
             </Grid.Col>}
 
-            <Grid.Col span={isMobile ? 12 : 6} mih={"100vh"} p="xl" m={0} bg="dark">
+            <Grid.Col span={isMobile ? 12 : 6} mih={"100vh"} p="xl" m={0}>
                 <Stack gap={0} h={"100%"}>
                     <Paper bg={"transparent"} my={20}>
                         <Text fw={600} fz={25}>Sign Up</Text>

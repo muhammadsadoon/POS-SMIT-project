@@ -11,7 +11,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <Provider store={store}>
       <ThemeProvider>
-        <Notifications position="top-right" />
+        <Notifications position="bottom-right" />
         <DashboardProvider>
           {children}
         </DashboardProvider>

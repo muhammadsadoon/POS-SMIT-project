@@ -1,6 +1,6 @@
 "use client";
 import { useGoogleAuthMutation, useLoginUserMutation } from "@/store/actions/auth-action/auth-action";
-import { Button, Divider, Grid, Group, Image, NumberInput, Paper, PasswordInput, Stack, Text, TextInput, useMantineTheme } from "@mantine/core";
+import { Button, Divider, Grid, Group, Image, NumberInput, Paper, PasswordInput, Stack, Text, TextInput, useMantineColorScheme, useMantineTheme } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useMediaQuery } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
@@ -58,8 +58,8 @@ const LoginPage = () => {
                     message: `${err.message}`,
                     color: "red",
                 });
-            }else{
-                console.log("Err: ",err)
+            } else {
+                console.log("Err: ", err)
             }
         }
     }
@@ -70,9 +70,12 @@ const LoginPage = () => {
         console.log(value)
         userSignInWithGoogle({})
     }
+
+    const { colorScheme } = useMantineColorScheme();
+    console.log(colorScheme)
     return (
         <Grid m={0} p={0} mih="100vh" gutter={0} style={{ overflow: "hidden" }} >
-            {!isMobile && <Grid.Col span={isMobile ? 12 : 6} p={0} m={0} mih={"100vh"} bg="white" >
+            {!isMobile && <Grid.Col span={isMobile ? 12 : 6} p={0} m={0} mih={"100vh"} bg={colorScheme == "dark" ? "light" : "dark"} >
                 <Stack gap={10} justify="center">
                     <div style={{ padding: "30px" }}>
                         <Text c={tp.colors.dark[6]} m={0} p={0} fz={30} fw={700}>Welcome Back Starter</Text>
@@ -85,7 +88,7 @@ const LoginPage = () => {
                 </Stack>
             </Grid.Col>}
 
-            <Grid.Col span={isMobile ? 12 : 6} mih={"100vh"} p="xl" m={0} bg="dark">
+            <Grid.Col span={isMobile ? 12 : 6} mih={"100vh"} p="xl" m={0} >
                 <Stack gap={0} h={"100%"}>
                     <Paper bg={"transparent"} my={20}>
                         <Text fw={600} fz={25}>Sign In</Text>

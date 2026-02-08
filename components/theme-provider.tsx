@@ -24,7 +24,20 @@ const theme = createTheme({
 
   headings: {
     fontFamily: "Inter, sans-serif",
-    fontWeight: "700", // 🔥 Default all headings bold
+    fontWeight: "700",
+  },
+
+  components: {
+    Heading: {
+      styles: (theme:any) => ({
+        root: {
+          color:
+            theme.colorScheme === "dark"
+              ? theme.white
+              : theme.black,
+        },
+      }),
+    },
   },
 
   shadows: {
@@ -35,10 +48,7 @@ const theme = createTheme({
 
 const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   return (
-    <MantineProvider
-      theme={theme}
-      defaultColorScheme="auto" // 🌗 Auto light/dark
-    >
+    <MantineProvider theme={theme} defaultColorScheme="auto">
       {children}
     </MantineProvider>
   );
