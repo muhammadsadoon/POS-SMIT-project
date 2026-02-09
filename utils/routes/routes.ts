@@ -19,5 +19,5 @@ export const protectedRoutes: string[] = [
 export const publicRoutes: string[] = [
     "/login",
     "/signup",
-    "/pub"
+    "/sub"
 ];

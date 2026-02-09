@@ -22,7 +22,7 @@ const middlewareResponse = async (req: NextRequest) => {
     // Logged-in user trying public route (login/signup)
     if (token && isPublic) {
         console.log("redirect → home page");
-        return NextResponse.redirect(new URL("/", req.url));
+        return NextResponse.redirect(new URL("/dashboard", req.url));
     }
 
     return NextResponse.next();

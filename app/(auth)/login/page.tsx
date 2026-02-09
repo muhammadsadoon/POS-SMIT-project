@@ -1,4 +1,5 @@
 "use client";
+import useSystemTheme from "@/hooks/getsystemtheme";
 import { useGoogleAuthMutation, useLoginUserMutation } from "@/store/actions/auth-action/auth-action";
 import { Button, Divider, Grid, Group, Image, NumberInput, Paper, PasswordInput, Stack, Text, TextInput, useMantineColorScheme, useMantineTheme } from "@mantine/core";
 import { useForm } from "@mantine/form";
@@ -72,10 +73,11 @@ const LoginPage = () => {
     }
 
     const { colorScheme } = useMantineColorScheme();
+    const checkSystemTheme = useSystemTheme();
     console.log(colorScheme)
     return (
         <Grid m={0} p={0} mih="100vh" gutter={0} style={{ overflow: "hidden" }} >
-            {!isMobile && <Grid.Col span={isMobile ? 12 : 6} p={0} m={0} mih={"100vh"} bg={colorScheme == "dark" ? "light" : "dark"} >
+            {!isMobile && <Grid.Col span={isMobile ? 12 : 6} p={0} m={0} mih={"100vh"} bg={"white"} >
                 <Stack gap={10} justify="center">
                     <div style={{ padding: "30px" }}>
                         <Text c={tp.colors.dark[6]} m={0} p={0} fz={30} fw={700}>Welcome Back Starter</Text>
@@ -86,9 +88,10 @@ const LoginPage = () => {
                         <Image src={"/dashboard.png"} alt="Test image" bdrs={"0% 3% 3% 0%"} h={400} w={"100%"} />
                     </Paper>
                 </Stack>
-            </Grid.Col>}
-
-            <Grid.Col span={isMobile ? 12 : 6} mih={"100vh"} p="xl" m={0} >
+            </Grid.Col>
+            }
+            <Divider />
+            <Grid.Col span={isMobile ? 12 : 6} mih={"100vh"} p="xl" m={0}>
                 <Stack gap={0} h={"100%"}>
                     <Paper bg={"transparent"} my={20}>
                         <Text fw={600} fz={25}>Sign In</Text>

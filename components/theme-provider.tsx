@@ -27,14 +27,53 @@ const theme = createTheme({
     fontWeight: "700",
   },
 
+  // 🔥 Dark + Light background control
+  other: {
+    lightBg: "#f9fafb",
+    darkBg: "#0b0f14", // deep dark
+  },
+
   components: {
+    AppShell: {
+      styles: (theme:any) => ({
+        main: {
+          backgroundColor:
+            theme.colorScheme === "dark"
+              ? theme.other.darkBg
+              : theme.other.lightBg,
+        },
+      }),
+    },
+
+    Paper: {
+      styles: (theme:any) => ({
+        root: {
+          backgroundColor:
+            theme.colorScheme === "dark"
+              ? "#111827" // dark gray
+              : "#ffffff",
+        },
+      }),
+    },
+
+    Text: {
+      styles: (theme:any) => ({
+        root: {
+          color:
+            theme.colorScheme === "dark"
+              ? "#e5e7eb" // light text
+              : "#111827",
+        },
+      }),
+    },
+
     Heading: {
       styles: (theme:any) => ({
         root: {
           color:
             theme.colorScheme === "dark"
-              ? theme.white
-              : theme.black,
+              ? "#f9fafb"
+              : "#111827",
         },
       }),
     },
