@@ -40,7 +40,7 @@ interface CartItem {
 export default function StaffPOSPage() {
   const router = useRouter();
   const { user } = useAuthStore();
-  const { currentProject } = useAppStore();
+  const { currentProject, setDefaultProjectForStaff } = useAppStore();
   const [products, setProducts] = useState<Product[]>([]);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -50,13 +50,16 @@ export default function StaffPOSPage() {
     useDisclosure(false);
 
   useEffect(() => {
-    loadProducts();
-    if (currentProject) {
-      loadProducts();
-    } else {
-      // router.push('/dashboard/projects');
-    }
-  }, [currentProject]);
+    const initializeProject = async () => {
+      if (!currentProject && user?.uid) {
+        await setDefaultProjectForStaff(user.uid);
+      }
+      if (currentProject) {
+        loadProducts();
+      }
+    };
+    initializeProject();
+  }, [currentProject, user?.uid]);
 
   useEffect(() => {
     // GSAP animations for product cards

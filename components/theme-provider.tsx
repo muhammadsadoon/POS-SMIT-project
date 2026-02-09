@@ -38,7 +38,7 @@ const theme = createTheme({
 
   components: {
     AppShell: {
-      styles: (theme) => ({
+      styles: (theme: any) => ({
         main: {
           backgroundColor:
             theme.colorScheme === "dark"
@@ -49,7 +49,7 @@ const theme = createTheme({
     },
 
     Paper: {
-      styles: (theme) => ({
+      styles: (theme: any) => ({
         root: {
           backgroundColor:
             theme.colorScheme === "dark"
@@ -64,7 +64,7 @@ const theme = createTheme({
     },
 
     Card: {
-      styles: (theme) => ({
+      styles: (theme: any) => ({
         root: {
           backgroundColor:
             theme.colorScheme === "dark"
@@ -79,7 +79,7 @@ const theme = createTheme({
     },
 
     Text: {
-      styles: (theme) => ({
+      styles: (theme:any) => ({
         root: {
           color:
             theme.colorScheme === "dark"
@@ -90,7 +90,7 @@ const theme = createTheme({
     },
 
     Title: {
-      styles: (theme) => ({
+      styles: (theme: any) => ({
         root: {
           color:
             theme.colorScheme === "dark"
@@ -101,7 +101,7 @@ const theme = createTheme({
     },
 
     Button: {
-      styles: (theme) => ({
+      styles: (theme:any) => ({
         root: {
           transition: "all 0.2s ease",
         },
@@ -109,7 +109,7 @@ const theme = createTheme({
     },
 
     NavLink: {
-      styles: (theme) => ({
+      styles: (theme:any) => ({
         root: {
           borderRadius: theme.radius.md,
           "&[dataActive]": {
@@ -133,7 +133,7 @@ const theme = createTheme({
     },
 
     Input: {
-      styles: (theme) => ({
+      styles: (theme:any) => ({
         input: {
           backgroundColor:
             theme.colorScheme === "dark"
@@ -155,7 +155,7 @@ const theme = createTheme({
     },
 
     Modal: {
-      styles: (theme) => ({
+      styles: (theme:any) => ({
         content: {
           backgroundColor:
             theme.colorScheme === "dark"
@@ -178,7 +178,7 @@ const theme = createTheme({
     },
 
     Table: {
-      styles: (theme) => ({
+      styles: (theme:any) => ({
         root: {
           "& thead tr th": {
             backgroundColor:

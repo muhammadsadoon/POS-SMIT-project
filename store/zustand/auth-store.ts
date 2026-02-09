@@ -21,7 +21,7 @@ interface AuthStore extends AuthState {
   login: (email: string, password: string) => Promise<void>;
   signup: (name: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-  initializeAuth: () => void;
+  initializeAuth: () => () => void;
   updateUserRole: (role: string) => Promise<void>;
 }
 

@@ -2,6 +2,7 @@
 
 import { create } from 'zustand';
 import { Project, AppState } from '@/types';
+import { getUserProjects } from '@/lib/firestore/projects';
 
 interface AppStore extends AppState {
   setCurrentProject: (project: Project | null) => void;
@@ -12,6 +13,7 @@ interface AppStore extends AppState {
   setLoading: (loading: boolean) => void;
   sidebarCollapsed: boolean;
   setSidebarCollapsed: (collapsed: boolean) => void;
+  setDefaultProjectForStaff: (userId: string) => Promise<void>;
 }
 
 export const useAppStore = create<AppStore>((set) => ({
@@ -47,4 +49,15 @@ export const useAppStore = create<AppStore>((set) => ({
   setLoading: (isLoading) => set({ isLoading }),
 
   setSidebarCollapsed: (sidebarCollapsed) => set({ sidebarCollapsed }),
+
+  setDefaultProjectForStaff: async (userId: string) => {
+    try {
+      const projects = await getUserProjects(userId);
+      if (projects.length > 0) {
+        set({ currentProject: projects[0] });
+      }
+    } catch (error) {
+      console.error('Error setting default project for staff:', error);
+    }
+  },
 }));
