@@ -1,0 +1,4 @@
+[
+    functions.seed-company-admin
+]
+verify_jwt = false
