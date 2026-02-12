@@ -247,6 +247,7 @@ export type Database = {
           id: string
           name: string
           owner_id: string
+          sale_password: string | null
           updated_at: string
         }
         Insert: {
@@ -255,6 +256,7 @@ export type Database = {
           id?: string
           name: string
           owner_id: string
+          sale_password?: string | null
           updated_at?: string
         }
         Update: {
@@ -263,6 +265,7 @@ export type Database = {
           id?: string
           name?: string
           owner_id?: string
+          sale_password?: string | null
           updated_at?: string
         }
         Relationships: []

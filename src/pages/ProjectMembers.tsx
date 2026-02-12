@@ -40,12 +40,34 @@ const ProjectMembers = () => {
 
   const fetchMembers = async () => {
     if (!projectId) return;
-    const { data } = await supabase
+    const { data: membersData } = await supabase
       .from("project_members")
-      .select("*, profiles(full_name)")
+      .select("*")
       .eq("project_id", projectId)
       .order("created_at");
-    setMembers(data || []);
+    
+    if (!membersData || membersData.length === 0) {
+      setMembers([]);
+      return;
+    }
+
+    // Fetch profiles separately since there's no FK relationship
+    const userIds = membersData.map(m => m.user_id);
+    const { data: profilesData } = await supabase
+      .from("profiles")
+      .select("user_id, full_name")
+      .in("user_id", userIds);
+
+    const profileMap: Record<string, string> = {};
+    (profilesData || []).forEach(p => {
+      profileMap[p.user_id] = p.full_name || "Unknown";
+    });
+
+    const enriched = membersData.map(m => ({
+      ...m,
+      profiles: { full_name: profileMap[m.user_id] || "Unknown" },
+    }));
+    setMembers(enriched);
   };
 
   useEffect(() => { fetchMembers(); }, [projectId]);

@@ -4,9 +4,11 @@ import { useAuth } from "@/hooks/useAuth";
 import { useProject } from "@/hooks/useProject";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Search, Plus, Minus, Trash2, ShoppingCart, CreditCard, Banknote, ScanBarcode } from "lucide-react";
+import { Search, Plus, Minus, Trash2, ShoppingCart, CreditCard, Banknote, ScanBarcode, Lock } from "lucide-react";
 import BarcodeScanner from "@/components/BarcodeScanner";
 import Barcode from "react-barcode";
 import type { Tables } from "@/integrations/supabase/types";
@@ -25,6 +27,10 @@ const ProjectPOS = () => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [processing, setProcessing] = useState(false);
   const [scannerOpen, setScannerOpen] = useState(false);
+  const [salePassword, setSalePassword] = useState<string | null>(null);
+  const [passwordDialog, setPasswordDialog] = useState(false);
+  const [enteredPassword, setEnteredPassword] = useState("");
+  const [pendingPaymentMethod, setPendingPaymentMethod] = useState<string | null>(null);
 
   const fetchProducts = async () => {
     if (!projectId) return;
@@ -32,7 +38,13 @@ const ProjectPOS = () => {
     setProducts(data || []);
   };
 
-  useEffect(() => { fetchProducts(); }, [projectId]);
+  useEffect(() => { fetchProducts(); fetchSalePassword(); }, [projectId]);
+
+  const fetchSalePassword = async () => {
+    if (!projectId) return;
+    const { data } = await supabase.from("projects").select("sale_password").eq("id", projectId).single();
+    if (data) setSalePassword(data.sale_password);
+  };
 
   const addToCart = (product: Tables<"products">) => {
     setCart((prev) => {
@@ -62,6 +74,26 @@ const ProjectPOS = () => {
   const removeFromCart = (productId: string) => setCart((prev) => prev.filter((i) => i.product.id !== productId));
 
   const total = cart.reduce((sum, i) => sum + Number(i.product.price) * i.quantity, 0);
+
+  const handleCheckout = (paymentMethod: string) => {
+    if (!user || !projectId || cart.length === 0) return;
+    if (salePassword) {
+      setPendingPaymentMethod(paymentMethod);
+      setEnteredPassword("");
+      setPasswordDialog(true);
+    } else {
+      checkout(paymentMethod);
+    }
+  };
+
+  const handlePasswordConfirm = () => {
+    if (enteredPassword !== salePassword) {
+      toast({ title: "Wrong password", description: "Sale confirmation password is incorrect", variant: "destructive" });
+      return;
+    }
+    setPasswordDialog(false);
+    if (pendingPaymentMethod) checkout(pendingPaymentMethod);
+  };
 
   const checkout = async (paymentMethod: string) => {
     if (!user || !projectId || cart.length === 0) return;
@@ -194,17 +226,49 @@ const ProjectPOS = () => {
               <span>Rs {total.toLocaleString()}</span>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <Button className="gap-2" onClick={() => checkout("cash")} disabled={cart.length === 0 || processing}>
+              <Button className="gap-2" onClick={() => handleCheckout("cash")} disabled={cart.length === 0 || processing}>
                 <Banknote className="w-4 h-4" /> Cash
               </Button>
-              <Button variant="secondary" className="gap-2" onClick={() => checkout("card")} disabled={cart.length === 0 || processing}>
+              <Button variant="secondary" className="gap-2" onClick={() => handleCheckout("card")} disabled={cart.length === 0 || processing}>
                 <CreditCard className="w-4 h-4" /> Card
               </Button>
             </div>
+            {salePassword && (
+              <p className="text-xs text-muted-foreground text-center flex items-center justify-center gap-1">
+                <Lock className="w-3 h-3" /> Password required to confirm sale
+              </p>
+            )}
           </div>
         </CardContent>
       </Card>
       <BarcodeScanner open={scannerOpen} onClose={() => setScannerOpen(false)} onScan={handleBarcodeScan} />
+
+      {/* Password Confirmation Dialog */}
+      <Dialog open={passwordDialog} onOpenChange={setPasswordDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2"><Lock className="w-5 h-5" /> Confirm Sale</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <p className="text-sm text-muted-foreground">Enter the sale confirmation password to proceed.</p>
+            <div className="space-y-2">
+              <Label>Password</Label>
+              <Input
+                type="password"
+                value={enteredPassword}
+                onChange={e => setEnteredPassword(e.target.value)}
+                placeholder="Enter password..."
+                onKeyDown={e => e.key === "Enter" && handlePasswordConfirm()}
+                autoFocus
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setPasswordDialog(false)}>Cancel</Button>
+            <Button onClick={handlePasswordConfirm}>Confirm Sale</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

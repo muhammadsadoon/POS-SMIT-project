@@ -23,10 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 
-
-# private files
 SUPABASE_FUNCTIONS.md
 SUPABASE_SETUP.md
-.env.local
 .env
 .env.example
+.env.local

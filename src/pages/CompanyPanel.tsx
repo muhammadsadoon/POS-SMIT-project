@@ -217,12 +217,12 @@ const CompanyPanel = () => {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="overview" className="gap-2"><BarChart3 className="w-4 h-4 hidden sm:block" /> Overview</TabsTrigger>
-          <TabsTrigger value="sales" className="gap-2"><Receipt className="w-4 h-4 hidden sm:block" /> Sales</TabsTrigger>
-          <TabsTrigger value="dealers" className="gap-2"><Users className="w-4 h-4 hidden sm:block" /> Dealers</TabsTrigger>
-          <TabsTrigger value="requests" className="gap-2"><UserCheck className="w-4 h-4 hidden sm:block" /> Requests</TabsTrigger>
-          <TabsTrigger value="management" className="gap-2"><Shield className="w-4 h-4 hidden sm:block" /> Management</TabsTrigger>
+        <TabsList className="flex flex-wrap w-full h-auto gap-1 p-1">
+          <TabsTrigger value="overview" className="gap-1.5 text-xs sm:text-sm flex-1 min-w-[80px]"><BarChart3 className="w-3.5 h-3.5 hidden sm:block" /> Overview</TabsTrigger>
+          <TabsTrigger value="sales" className="gap-1.5 text-xs sm:text-sm flex-1 min-w-[70px]"><Receipt className="w-3.5 h-3.5 hidden sm:block" /> Sales</TabsTrigger>
+          <TabsTrigger value="dealers" className="gap-1.5 text-xs sm:text-sm flex-1 min-w-[70px]"><Users className="w-3.5 h-3.5 hidden sm:block" /> Dealers</TabsTrigger>
+          <TabsTrigger value="requests" className="gap-1.5 text-xs sm:text-sm flex-1 min-w-[80px]"><UserCheck className="w-3.5 h-3.5 hidden sm:block" /> Requests</TabsTrigger>
+          <TabsTrigger value="management" className="gap-1.5 text-xs sm:text-sm flex-1 min-w-[90px]"><Shield className="w-3.5 h-3.5 hidden sm:block" /> Manage</TabsTrigger>
         </TabsList>
 
         {/* ===== OVERVIEW TAB ===== */}
@@ -528,20 +528,20 @@ const CompanyPanel = () => {
                           </TableCell>
                           <TableCell className="text-right">
                             <div className="flex items-center justify-end gap-1 flex-wrap">
-                              <Button size="sm" variant="outline" className="gap-1" onClick={() => { setEditMaxProjects(String(l.max_projects)); setEditDialog({ open: true, limit: l }); }}>
-                                <Pencil className="w-3 h-3" /> Edit
+                              <Button size="sm" variant="outline" className="gap-1 text-xs" onClick={() => { setEditMaxProjects(String(l.max_projects)); setEditDialog({ open: true, limit: l }); }}>
+                                <Pencil className="w-3 h-3" /> <span className="hidden sm:inline">Edit</span>
                               </Button>
                               {isExpired ? (
-                                <Button size="sm" variant="outline" className="gap-1 text-emerald-600" onClick={() => handleReactivate(l.user_id)}>
-                                  <RefreshCw className="w-3 h-3" /> Reactivate
+                                <Button size="sm" variant="outline" className="gap-1 text-xs text-emerald-600" onClick={() => handleReactivate(l.user_id)}>
+                                  <RefreshCw className="w-3 h-3" /> <span className="hidden sm:inline">Reactivate</span>
                                 </Button>
                               ) : (
-                                <Button size="sm" variant="outline" className="gap-1" onClick={() => handleExpire(l.user_id)}>
-                                  <Ban className="w-3 h-3" /> Expire
+                                <Button size="sm" variant="outline" className="gap-1 text-xs" onClick={() => handleExpire(l.user_id)}>
+                                  <Ban className="w-3 h-3" /> <span className="hidden sm:inline">Expire</span>
                                 </Button>
                               )}
-                              <Button size="sm" variant="destructive" className="gap-1" onClick={() => setDeleteDialog({ open: true, limit: l })}>
-                                <Trash2 className="w-3 h-3" /> Delete
+                              <Button size="sm" variant="destructive" className="gap-1 text-xs" onClick={() => setDeleteDialog({ open: true, limit: l })}>
+                                <Trash2 className="w-3 h-3" /> <span className="hidden sm:inline">Delete</span>
                               </Button>
                             </div>
                           </TableCell>
@@ -699,7 +699,7 @@ const CompanySalesTab = ({ stats, statsLoading }: { stats: any; statsLoading: bo
   return (
     <div className="space-y-4">
       {/* Summary Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card className="border-0 shadow-sm">
           <CardContent className="p-4">
             <p className="text-xs text-muted-foreground">Filtered Sales</p>
