@@ -48,8 +48,8 @@ const Landing = () => {
 
   const plans = [
     { name: "Starter", projects: 3, price: "Free", desc: "Perfect for trying out", popular: false },
-    { name: "Professional", projects: 5, price: "₹2,999/mo", desc: "For growing businesses", popular: true },
-    { name: "Enterprise", projects: 10, price: "₹7,999/mo", desc: "For large operations", popular: false },
+    { name: "Professional", projects: 5, price: "Rs2,999/mo", desc: "For growing businesses", popular: true },
+    { name: "Enterprise", projects: 10, price: "Rs7,999/mo", desc: "For large operations", popular: false },
   ];
 
   const stats = [
