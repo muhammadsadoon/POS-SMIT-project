@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { useProject } from "@/hooks/useProject";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,6 +27,7 @@ interface SearchResult {
 const ITEMS_PER_PAGE = 10;
 
 const ProjectMembers = () => {
+  const { user } = useAuth();
   const { projectId, isAdminOrManager, role } = useProject();
   const { toast } = useToast();
   const [members, setMembers] = useState<any[]>([]);
@@ -45,7 +47,7 @@ const ProjectMembers = () => {
       .select("*")
       .eq("project_id", projectId)
       .order("created_at");
-    
+
     if (!membersData || membersData.length === 0) {
       setMembers([]);
       return;
@@ -67,10 +69,13 @@ const ProjectMembers = () => {
       ...m,
       profiles: { full_name: profileMap[m.user_id] || "Unknown" },
     }));
-    setMembers(enriched);
+
+    // Filter out the current user (project creator/owner) so they don't see themselves
+    const finalMembers = enriched.filter(m => m.user_id !== user?.id);
+    setMembers(finalMembers);
   };
 
-  useEffect(() => { fetchMembers(); }, [projectId]);
+  useEffect(() => { fetchMembers(); }, [projectId, user]);
 
   if (!isAdminOrManager) return <Navigate to={`/project/${projectId}/pos`} replace />;
 

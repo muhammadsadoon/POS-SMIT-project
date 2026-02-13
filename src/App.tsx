@@ -18,6 +18,7 @@ import ProjectProducts from "@/pages/ProjectProducts";
 import ProjectCategories from "@/pages/ProjectCategories";
 import ProjectSales from "@/pages/ProjectSales";
 import ProjectMembers from "@/pages/ProjectMembers";
+import Contact from "@/pages/Contact";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,7 +37,8 @@ const App = () => (
               <Route path="/projects" element={<MainLayout><Projects /></MainLayout>} />
               <Route path="/settings" element={<MainLayout><Settings /></MainLayout>} />
               <Route path="/company" element={<MainLayout><CompanyPanel /></MainLayout>} />
-              
+              <Route path="/contact" element={<MainLayout><Contact /></MainLayout>} />
+
               {/* Project-scoped routes */}
               <Route path="/project/:projectId/dashboard" element={<ProjectLayout><ProjectDashboard /></ProjectLayout>} />
               <Route path="/project/:projectId/pos" element={<ProjectLayout><ProjectPOS /></ProjectLayout>} />
@@ -44,7 +46,7 @@ const App = () => (
               <Route path="/project/:projectId/categories" element={<ProjectLayout><ProjectCategories /></ProjectLayout>} />
               <Route path="/project/:projectId/sales" element={<ProjectLayout><ProjectSales /></ProjectLayout>} />
               <Route path="/project/:projectId/members" element={<ProjectLayout><ProjectMembers /></ProjectLayout>} />
-              
+
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>

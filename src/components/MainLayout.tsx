@@ -4,7 +4,7 @@ import { Navigate, useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { LogOut, FolderKanban, Settings, Shield, Store } from "lucide-react";
+import { LogOut, FolderKanban, Settings, Shield, Store, MessageCircle } from "lucide-react";
 import { ADMIN_EMAIL } from "@/config/admin";
 
 const MainLayout = ({ children }: { children: ReactNode }) => {
@@ -20,7 +20,7 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
     const checkAndPromote = async () => {
       // Check if already company admin
       const { data: caData } = await supabase.from("company_admins").select("id").eq("user_id", user.id).maybeSingle();
-      
+
       if (caData) {
         setIsCompanyAdmin(true);
         return;
@@ -63,6 +63,7 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
   const navItems = [
     ...(isCompanyAdmin ? [] : [{ label: "Projects", path: "/projects", icon: FolderKanban }]),
     { label: "Settings", path: "/settings", icon: Settings },
+    { label: "Contact", path: "/contact", icon: MessageCircle },
     ...(isCompanyAdmin ? [{ label: "Company", path: "/company", icon: Shield }] : []),
   ];
 
