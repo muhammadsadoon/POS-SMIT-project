@@ -44,6 +44,7 @@ const CompanyPanel = () => {
   const [dealerSearch, setDealerSearch] = useState("");
   const [dealerPage, setDealerPage] = useState(1);
   const DEALERS_PER_PAGE = 3;
+  const [manageSearch, setManageSearch] = useState("");
 
   const refreshData = async () => {
     const [reqRes, limRes] = await Promise.all([
@@ -485,6 +486,16 @@ const CompanyPanel = () => {
 
         {/* ===== MANAGEMENT TAB ===== */}
         <TabsContent value="management" className="space-y-6">
+          <div className="relative max-w-sm">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              placeholder="Search by name or ID..."
+              className="pl-9"
+              value={manageSearch}
+              onChange={(e) => setManageSearch(e.target.value)}
+            />
+          </div>
+
           <Card className="border-0 shadow-md">
             <CardHeader>
               <CardTitle>Dealer Limits & Access Control</CardTitle>
@@ -501,10 +512,23 @@ const CompanyPanel = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {limits.length === 0 ? (
-                    <TableRow><TableCell colSpan={4} className="text-center py-8 text-muted-foreground">No dealers</TableCell></TableRow>
-                  ) : (
-                    limits.map((l) => {
+                  {(() => {
+                    const filteredLimits = limits.filter(l => {
+                      const u = stats?.userStats?.find((u: any) => u.user_id === l.user_id);
+                      const name = u?.name || "";
+                      const term = manageSearch.toLowerCase();
+                      return name.toLowerCase().includes(term) || l.user_id.toLowerCase().includes(term);
+                    });
+
+                    if (filteredLimits.length === 0) {
+                      return (
+                        <TableRow><TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+                          {manageSearch ? "No dealers match your search" : "No dealers found"}
+                        </TableCell></TableRow>
+                      );
+                    }
+
+                    return filteredLimits.map((l) => {
                       const userName = stats?.userStats?.find((u: any) => u.user_id === l.user_id)?.name || l.user_id.slice(0, 8) + "...";
                       const isExpired = l.max_projects === 0;
                       return (
@@ -547,8 +571,8 @@ const CompanyPanel = () => {
                           </TableCell>
                         </TableRow>
                       );
-                    })
-                  )}
+                    });
+                  })()}
                 </TableBody>
               </Table>
             </CardContent>
@@ -673,6 +697,15 @@ const CompanySalesTab = ({ stats, statsLoading }: { stats: any; statsLoading: bo
   const totalSalesPages = Math.ceil(filtered.length / SALES_PER_PAGE);
   const paginatedSales = filtered.slice((salesPage - 1) * SALES_PER_PAGE, salesPage * SALES_PER_PAGE);
 
+  // Calculate Specific Period Stats
+  const now = new Date();
+  const todaySales = sales.filter((s: any) => format(new Date(s.created_at), "yyyy-MM-dd") === format(now, "yyyy-MM-dd"));
+  const todayRevenue = todaySales.reduce((sum: number, s: any) => sum + Number(s.total), 0);
+
+  const lastMonth = subMonths(now, 1);
+  const lastMonthSales = sales.filter((s: any) => format(new Date(s.created_at), "yyyy-MM") === format(lastMonth, "yyyy-MM"));
+  const lastMonthRevenue = lastMonthSales.reduce((sum: number, s: any) => sum + Number(s.total), 0);
+
   useEffect(() => { setSalesPage(1); }, [monthFilter]);
 
   const exportToExcel = () => {
@@ -699,20 +732,34 @@ const CompanySalesTab = ({ stats, statsLoading }: { stats: any; statsLoading: bo
   return (
     <div className="space-y-4">
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="border-0 shadow-sm">
+      <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-4">
+        <Card className="border-0 shadow-sm col-span-1 sm:col-span-1">
           <CardContent className="p-4">
             <p className="text-xs text-muted-foreground">Filtered Sales</p>
             <p className="text-2xl font-bold">{filtered.length}</p>
           </CardContent>
         </Card>
-        <Card className="border-0 shadow-sm">
+        <Card className="border-0 shadow-sm col-span-1 sm:col-span-1">
           <CardContent className="p-4">
-            <p className="text-xs text-muted-foreground">Total Revenue</p>
+            <p className="text-xs text-muted-foreground">Filtered Revenue</p>
             <p className="text-2xl font-bold text-primary">Rs {totalRevenue.toLocaleString()}</p>
           </CardContent>
         </Card>
-        <Card className="border-0 shadow-sm">
+        <Card className="border-0 shadow-sm col-span-1 sm:col-span-1">
+          <CardContent className="p-4">
+            <p className="text-xs text-muted-foreground">Today's Revenue</p>
+            <p className="text-2xl font-bold text-emerald-600">Rs {todayRevenue.toLocaleString()}</p>
+            <p className="text-xs text-muted-foreground">{todaySales.length} sales</p>
+          </CardContent>
+        </Card>
+        <Card className="border-0 shadow-sm col-span-1 sm:col-span-1">
+          <CardContent className="p-4">
+            <p className="text-xs text-muted-foreground">Last Month's Revenue</p>
+            <p className="text-2xl font-bold text-blue-600">Rs {lastMonthRevenue.toLocaleString()}</p>
+            <p className="text-xs text-muted-foreground">{lastMonthSales.length} sales</p>
+          </CardContent>
+        </Card>
+        <Card className="border-0 shadow-sm col-span-1 sm:col-span-1">
           <CardContent className="p-4">
             <p className="text-xs text-muted-foreground">Avg per Sale</p>
             <p className="text-2xl font-bold">{filtered.length > 0 ? `Rs ${Math.round(totalRevenue / filtered.length).toLocaleString()}` : "—"}</p>

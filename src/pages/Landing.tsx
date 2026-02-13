@@ -1,17 +1,79 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ArrowRight, Check, Store, Zap, BarChart3, Users, Shield, ShoppingCart, Layers, Smartphone } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Landing = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const dashboardRef = useRef<HTMLDivElement>(null);
+  const posRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Use IntersectionObserver for scroll animations instead of GSAP
+    // GSAP Animation for Dashboard Image
+    if (dashboardRef.current) {
+      gsap.fromTo(
+        dashboardRef.current,
+        {
+          rotateX: -80,
+          y: 100,
+          opacity: 0,
+          scale: 0.4,
+          transformPerspective: 1000,
+        },
+        {
+          rotateX: 0,
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 1.5,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: dashboardRef.current,
+            start: "top 85%",
+            end: "top 40%",
+            scrub: 1,
+          },
+        }
+      );
+    }
+
+    // GSAP Animation for POS Image
+    if (posRef.current) {
+      gsap.fromTo(
+        posRef.current,
+        {
+          rotateY: -30,
+          x: -50,
+          opacity: 0,
+          scale: 0.9,
+          transformPerspective: 1000,
+        },
+        {
+          rotateY: 0,
+          x: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 1.5,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: posRef.current,
+            start: "top 80%",
+            end: "top 50%",
+            scrub: 1,
+          },
+        }
+      );
+    }
+
+    // Use IntersectionObserver for other scroll animations
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -28,7 +90,10 @@ const Landing = () => {
       observer.observe(el);
     });
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      ScrollTrigger.getAll().forEach(t => t.kill());
+    };
   }, []);
 
   const features = [
@@ -148,7 +213,7 @@ const Landing = () => {
             </span>
           </h1>
           <p className="hero-subtitle text-sm sm:text-base md:text-lg text-muted-foreground mt-5 max-w-2xl mx-auto leading-relaxed">
-            The all-in-one POS system that helps you manage inventory, track sales, 
+            The all-in-one POS system that helps you manage inventory, track sales,
             and empower your team — across multiple stores.
           </p>
           <div className="hero-buttons flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">
@@ -173,6 +238,20 @@ const Landing = () => {
               <Check className="w-3.5 h-3.5 text-primary" />
               <span>Cancel anytime</span>
             </div>
+          </div>
+
+          {/* Dashboard Preview Image */}
+          <div
+            ref={dashboardRef}
+            className="mt-16 sm:mt-24 relative mx-auto max-w-5xl rounded-xl border bg-background/50 shadow-2xl overflow-hidden"
+            style={{ transformStyle: "preserve-3d" }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-10" />
+            <img
+              src="/dashboard.png"
+              alt="SalePOS Dashboard Preview"
+              className="w-full h-auto object-cover rounded-xl"
+            />
           </div>
         </div>
       </section>
@@ -218,10 +297,60 @@ const Landing = () => {
         </div>
       </section>
 
+      {/* POS Preview Section */}
+      <section className="py-20 bg-muted/30 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex flex-col md:flex-row items-center gap-12">
+            <div className="flex-1 order-2 md:order-1">
+              <div
+                ref={posRef}
+                className="relative rounded-xl border bg-background/50 shadow-2xl overflow-hidden"
+                style={{ transformStyle: "preserve-3d" }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-tr from-background/20 via-transparent to-transparent z-10" />
+                <img
+                  src="/dashboard-pos.png"
+                  alt="POS Interface"
+                  className="w-full h-auto object-cover rounded-xl"
+                />
+              </div>
+            </div>
+            <div className="flex-1 order-1 md:order-2 scroll-animate">
+              <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-3 py-1 text-xs font-medium text-primary mb-5">
+                <Zap className="w-3 h-3" />
+                <span>Ultra-Fast Checkout</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                Optimized for Speed
+              </h2>
+              <p className="text-muted-foreground text-lg leading-relaxed mb-6">
+                Our POS interface is built for high-volume retail. Barcode scanning, quick shortcuts,
+                and instant receipt generation mean you spend less time clicking and more time selling.
+              </p>
+              <ul className="space-y-3">
+                {[
+                  "Keyboard shortcuts for power users",
+                  "Instant product search & barcode scanning",
+                  "Works offline (coming soon)",
+                  "Customizable receipt templates"
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3">
+                    <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <Check className="w-3.5 h-3.5 text-primary" />
+                    </div>
+                    <span className="font-medium">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* How It Works */}
       <section id="how-it-works" className="py-20 bg-muted/30">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
-        <div className="text-center mb-10 scroll-animate">
+          <div className="text-center mb-10 scroll-animate">
             <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-3 py-1 text-xs font-medium text-primary mb-3">
               <ShoppingCart className="w-3 h-3" />
               <span>Simple Process</span>

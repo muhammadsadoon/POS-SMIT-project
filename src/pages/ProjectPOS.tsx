@@ -12,6 +12,8 @@ import { Search, Plus, Minus, Trash2, ShoppingCart, CreditCard, Banknote, ScanBa
 import BarcodeScanner from "@/components/BarcodeScanner";
 import Barcode from "react-barcode";
 import type { Tables } from "@/integrations/supabase/types";
+import html2canvas from "html2canvas";
+import { Receipt } from "@/components/pos/Receipt";
 
 interface CartItem {
   product: Tables<"products">;
@@ -20,7 +22,7 @@ interface CartItem {
 
 const ProjectPOS = () => {
   const { user } = useAuth();
-  const { projectId } = useProject();
+  const { projectId, project } = useProject();
   const { toast } = useToast();
   const [products, setProducts] = useState<Tables<"products">[]>([]);
   const [search, setSearch] = useState("");
@@ -39,6 +41,40 @@ const ProjectPOS = () => {
   };
 
   useEffect(() => { fetchProducts(); fetchSalePassword(); }, [projectId]);
+
+  // Global Barcode Scanner Listener
+  useEffect(() => {
+    let buffer = "";
+    let lastKeyTime = Date.now();
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if focus is on an input field
+      if ((e.target as HTMLElement).tagName === "INPUT" || (e.target as HTMLElement).tagName === "TEXTAREA") {
+        return;
+      }
+
+      const currentTime = Date.now();
+
+      // If time between keys is too long, reset buffer (simulating scanner speed check)
+      if (currentTime - lastKeyTime > 100) {
+        buffer = "";
+      }
+      lastKeyTime = currentTime;
+
+      if (e.key === "Enter") {
+        if (buffer.length > 1) { // Basic length check to avoid accidentally triggering on empty Enter
+          handleBarcodeScan(buffer);
+          buffer = "";
+        }
+      } else if (e.key.length === 1) {
+        // Only append printable characters
+        buffer += e.key;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [products]); // Re-attach when products change so handleBarcodeScan has fresh state
 
   const fetchSalePassword = async () => {
     if (!projectId) return;
@@ -120,6 +156,11 @@ const ProjectPOS = () => {
       if (itemsError) throw itemsError;
 
       toast({ title: "Sale completed!", description: `Total: Rs ${total.toLocaleString()}` });
+
+      // Generate Receipt
+      setLastSale({ id: sale.id, items: cart, total, date: new Date() });
+      setTimeout(() => generateReceipt(), 100);
+
       setCart([]);
       fetchProducts();
     } catch (error: any) {
@@ -129,13 +170,36 @@ const ProjectPOS = () => {
     }
   };
 
+  const [lastSale, setLastSale] = useState<{ id: string, items: CartItem[], total: number, date: Date } | null>(null);
+
+  const generateReceipt = async () => {
+    const element = document.getElementById('receipt-print');
+    if (!element) return;
+    try {
+      const canvas = await html2canvas(element, { scale: 2 });
+      const image = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.href = image;
+      link.download = `receipt-${Date.now()}.png`;
+      link.click();
+    } catch (err) {
+      console.error("Receipt generation failed:", err);
+      toast({ title: "Receipt Error", description: "Failed to generate receipt image", variant: "destructive" });
+    }
+  };
+
   const handleBarcodeScan = (barcode: string) => {
     const product = products.find((p) => p.barcode === barcode);
     if (product) {
       addToCart(product);
       toast({ title: "Product added!", description: product.name });
     } else {
-      toast({ title: "Product not found", description: `No product with barcode: ${barcode}`, variant: "destructive" });
+      toast({
+        title: "Product Not Found",
+        description: `No product found with barcode: ${barcode}`,
+        variant: "destructive",
+        duration: 3000,
+      });
     }
   };
 
@@ -269,6 +333,18 @@ const ProjectPOS = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Hidden Receipt for Printing/Capture */}
+      {lastSale && (
+        <Receipt
+          saleId={lastSale.id}
+          items={lastSale.items}
+          total={lastSale.total}
+          date={lastSale.date}
+          projectName={project?.name}
+          hidden={true}
+        />
+      )}
     </div>
   );
 };

@@ -42,7 +42,51 @@ const ProjectProducts = () => {
   };
 
   useEffect(() => { fetchData(); }, [projectId]);
+  useEffect(() => { fetchData(); }, [projectId]);
   useEffect(() => { setCurrentPage(1); }, [search]);
+
+  // Global Barcode Scanner Listener
+  useEffect(() => {
+    let buffer = "";
+    let lastKeyTime = Date.now();
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // If focus is on an input, we generally want to let it handle input,
+      // UNLESS we are in the dialog and want to capture scanner input for the barcode field?
+      // For now, let's stick to the safe "ProjectPOS" logic: ignore if input is focused.
+      // This means user must click away (blur) or just not focus an input to scan.
+      // However, if the dialog auto-focuses "Name", this might be annoying.
+      // Let's try to be smart: if `open` is true, we might want to override?
+      // No, that's risky. Let's start with standard behavior.
+      if ((e.target as HTMLElement).tagName === "INPUT" || (e.target as HTMLElement).tagName === "TEXTAREA") {
+        return;
+      }
+
+      const currentTime = Date.now();
+      if (currentTime - lastKeyTime > 100) {
+        buffer = "";
+      }
+      lastKeyTime = currentTime;
+
+      if (e.key === "Enter") {
+        if (buffer.length > 1) {
+          if (open) {
+            setForm(prev => ({ ...prev, barcode: buffer }));
+            toast({ title: "Barcode Scanned", description: buffer });
+          } else {
+            setSearch(buffer);
+            toast({ title: "Searching Product", description: buffer });
+          }
+          buffer = "";
+        }
+      } else if (e.key.length === 1) {
+        buffer += e.key;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [open]); // Re-attach when dialog state changes
 
   if (!isAdminOrManager) return <Navigate to={`/project/${projectId}/pos`} replace />;
 

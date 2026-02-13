@@ -3,26 +3,50 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useProject } from "@/hooks/useProject";
 import { Package, ShoppingCart, DollarSign, Users } from "lucide-react";
+import { SalesChart } from "@/components/dashboard/SalesChart";
+import { format, subDays } from "date-fns";
 
 const ProjectDashboard = () => {
   const { projectId } = useProject();
   const [stats, setStats] = useState({ products: 0, sales: 0, revenue: 0, members: 0 });
+  const [salesData, setSalesData] = useState<{ name: string; total: number }[]>([]);
 
   useEffect(() => {
     if (!projectId) return;
     const fetchStats = async () => {
-      const [products, sales, members] = await Promise.all([
+      const [products, salesResult, members] = await Promise.all([
         supabase.from("products").select("id", { count: "exact", head: true }).eq("project_id", projectId),
-        supabase.from("sales").select("id, total").eq("project_id", projectId),
+        supabase.from("sales").select("id, total, created_at").eq("project_id", projectId),
         supabase.from("project_members").select("id", { count: "exact", head: true }).eq("project_id", projectId),
       ]);
-      const revenue = (sales.data || []).reduce((sum, s) => sum + Number(s.total), 0);
+
+      const sales = salesResult.data || [];
+      const revenue = sales.reduce((sum, s) => sum + Number(s.total), 0);
+
       setStats({
         products: products.count || 0,
-        sales: (sales.data || []).length,
+        sales: sales.length,
         revenue,
         members: members.count || 0,
       });
+
+      // Process sales data for the chart (last 7 days)
+      const last7Days = Array.from({ length: 7 }, (_, i) => {
+        const date = subDays(new Date(), 6 - i);
+        return date;
+      });
+
+      const chartData = last7Days.map((date) => {
+        const dateStr = format(date, "yyyy-MM-dd");
+        const daySales = sales.filter((s) => {
+          const saleDate = new Date(s.created_at);
+          return format(saleDate, "yyyy-MM-dd") === dateStr;
+        });
+        const total = daySales.reduce((sum, s) => sum + Number(s.total), 0);
+        return { name: format(date, "MMM dd"), total };
+      });
+
+      setSalesData(chartData);
     };
     fetchStats();
   }, [projectId]);
@@ -54,6 +78,8 @@ const ProjectDashboard = () => {
           </Card>
         ))}
       </div>
+
+      <SalesChart data={salesData} />
     </div>
   );
 };

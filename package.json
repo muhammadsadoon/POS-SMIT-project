@@ -48,6 +48,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
     "gsap": "^3.14.2",
+    "html2canvas": "^1.4.1",
     "html5-qrcode": "^2.3.8",
     "lovable-tagger": "^1.1.13",
     "lucide-react": "^0.462.0",

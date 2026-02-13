@@ -7,11 +7,13 @@ import {
   Users,
   ArrowLeft,
   Store,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useProject } from "@/hooks/useProject";
 import { useNavigate } from "react-router-dom";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { useTheme } from "next-themes";
 import {
   Sidebar,
   SidebarContent,
@@ -32,6 +34,7 @@ export function ProjectSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const navigate = useNavigate();
+  const { theme, setTheme } = useTheme();
 
   const menuItems = [
     { title: "Dashboard", url: `/project/${projectId}/dashboard`, icon: LayoutDashboard, show: isAdminOrManager },
@@ -71,7 +74,7 @@ export function ProjectSidebar() {
                     <NavLink
                       to={item.url}
                       end
-                      className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-all"
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-all"
                       activeClassName="bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary hover:text-sidebar-primary-foreground shadow-lg shadow-sidebar-primary/20"
                     >
                       <item.icon className="w-5 h-5 shrink-0" />
@@ -86,7 +89,14 @@ export function ProjectSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="p-4 space-y-2">
-        {!collapsed && <ThemeToggle className="w-full justify-start" />}
+        <Button
+          variant="ghost"
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          className="w-full justify-start gap-3 text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent"
+        >
+          {theme === "dark" ? <Sun className="w-5 h-5 shrink-0" /> : <Moon className="w-5 h-5 shrink-0" />}
+          {!collapsed && <span>{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>}
+        </Button>
         <Button
           variant="ghost"
           onClick={() => navigate("/projects")}
